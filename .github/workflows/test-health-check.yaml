@@ -1,0 +1,34 @@
+name: Testkube AI Trigger
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'services/payment-service/**'
+
+  workflow_dispatch:
+    inputs:
+      changed_path:
+        description: 'Path to simulate change'
+        required: false
+        default: 'services/payment-service/**'
+
+jobs:
+  trigger-testkube:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Testkube
+        uses: kubeshop/setup-testkube@v1
+        with:
+          organization: ${{ secrets.TK_ORG_ID }}
+          environment: ${{ secrets.TK_ENV_ID }}
+          token: ${{ secrets.TK_API_TOKEN }}
+
+      - name: Run Orchestrator
+        run: |
+          export CHANGED_PATH="${{ github.event.inputs.changed_path || 'services/payment-service/**' }}"
+          echo "Changed path: $CHANGED_PATH"
+          testkube run testworkflow payment-analysis-orchestrator
