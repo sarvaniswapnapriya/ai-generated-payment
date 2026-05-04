@@ -1,24 +1,25 @@
 name: Testkube AI Trigger
 
 on:
-  push:
+  pull_request:
     branches: [ main ]
-    paths:
-      - 'services/payment-service/**'
 
   workflow_dispatch:
     inputs:
       changed_path:
         description: 'Path to simulate change'
         required: false
-        default: 'services/payment-service/**'
+        default: '**'
 
 jobs:
   trigger-testkube:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout PR code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Testkube
         uses: kubeshop/setup-testkube@v1
@@ -27,9 +28,13 @@ jobs:
           environment: ${{ secrets.TK_ENV_ID }}
           token: ${{ secrets.TK_API_TOKEN }}
 
+      - name: Extract changed files
+        run: |
+          git fetch origin main
+          echo "Changed files:"
+          git diff --name-only origin/main...HEAD
+
       - name: Run Orchestrator
         run: |
-          export CHANGED_PATH="${{ github.event.inputs.changed_path || 'services/payment-service/**' }}"
-          echo "Changed path: $CHANGED_PATH"
+          echo "Triggering AI orchestrator"
           testkube run testworkflow ai-code-analysis-orchestrator
-
