@@ -31,4 +31,5 @@ jobs:
         run: |
           export CHANGED_PATH="${{ github.event.inputs.changed_path || 'services/payment-service/**' }}"
           echo "Changed path: $CHANGED_PATH"
-          testkube run testworkflow payment-analysis-orchestrator
+          testkube run testworkflow ai-code-analysis-orchestrator
+
