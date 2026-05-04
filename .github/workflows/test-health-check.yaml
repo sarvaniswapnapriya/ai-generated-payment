@@ -32,7 +32,4 @@ jobs:
       - name: Run Orchestrator
         run: |
           echo "Triggering AI orchestrator"
-          testkube run testworkflow ai-code-analysis-orchestrator \
-            --env PR_NUMBER=${{ github.event.pull_request.number }} \
-            --env PR_URL=${{ github.event.pull_request.html_url }} \
-            --env REPO=${{ github.repository }}
+          testkube run testworkflow ai-code-analysis-orchestrator
