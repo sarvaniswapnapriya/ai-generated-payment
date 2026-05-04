@@ -27,14 +27,12 @@ jobs:
           organization: ${{ secrets.TK_ORG_ID }}
           environment: ${{ secrets.TK_ENV_ID }}
           token: ${{ secrets.TK_API_TOKEN }}
-
-      - name: Extract changed files
-        run: |
-          git fetch origin main
-          echo "Changed files:"
-          git diff --name-only origin/main...HEAD
+      
 
       - name: Run Orchestrator
         run: |
           echo "Triggering AI orchestrator"
-          testkube run testworkflow ai-code-analysis-orchestrator
+          testkube run testworkflow ai-code-analysis-orchestrator \
+            --env PR_NUMBER=${{ github.event.pull_request.number }} \
+            --env PR_URL=${{ github.event.pull_request.html_url }} \
+            --env REPO=${{ github.repository }}
