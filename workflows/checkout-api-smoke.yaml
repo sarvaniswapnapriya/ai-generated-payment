@@ -1,0 +1,32 @@
+kind: TestWorkflow
+apiVersion: testworkflows.testkube.io/v1
+metadata:
+  name: checkout-api-smoke
+  labels:
+    suite: checkout
+    tier: smoke
+spec:
+  steps:
+  - name: checkout-smoke-test
+    run:
+      command:
+      - sh
+      - -c
+      args:
+      - |-
+        echo "Running checkout API smoke test"
+        RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+          -X POST $BASE_URL/checkout \
+          -H "Content-Type: application/json" \
+          -d '{"cartId":"123"}')
+
+        if [ "$RESPONSE" -ne 200 ]; then
+          echo "Checkout API failed"
+          exit 1
+        fi
+        echo "Checkout API passed"
+status:
+  health:
+    passRate: 1
+    flipRate: 0
+    overallHealth: 1
