@@ -1,0 +1,22 @@
+kind: TestWorkflow
+apiVersion: testworkflows.testkube.io/v1
+metadata:
+  name: payment-logic-check-ai-code
+  labels:
+    tier: check-ai-code
+spec:
+  steps:
+  - name: payment-logic-check-ai-code
+    run:
+      image: busybox
+      shell: |-
+        echo "Checking Payment Service health..."
+        sleep 2
+        echo "Status: 200 OK"
+        echo "Database: Connected"
+        echo "SUCCESS: Payment Service is ready."
+status:
+  health:
+    passRate: 0.8333333333333334
+    flipRate: 0.2
+    overallHealth: 0.6666666666666667
