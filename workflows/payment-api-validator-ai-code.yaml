@@ -1,0 +1,24 @@
+kind: TestWorkflow
+apiVersion: testworkflows.testkube.io/v1
+metadata:
+  name: payment-api-validator-ai-code
+  labels:
+    suite: payment
+    tier: api
+spec:
+  content: {}
+  steps:
+  - name: validate-payment-api
+    run:
+      command:
+      - sh
+      - -c
+      args:
+      - |
+        echo "Validating payment API"
+        curl -X POST $BASE_URL/pay -d '{"amount":100}' -H "Content-Type: application/json" | grep "status"
+status:
+  health:
+    passRate: 0
+    flipRate: 0
+    overallHealth: 0
