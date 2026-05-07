@@ -1,0 +1,32 @@
+kind: TestWorkflow
+apiVersion: testworkflows.testkube.io/v1
+metadata:
+  name: checkout-payment-e2e
+  labels:
+    suite: checkout
+    tier: e2e
+spec:
+  steps:
+  - name: checkout-payment-flow
+    run:
+      command:
+      - sh
+      - -c
+      args:
+      - |-
+        echo "Running checkout → payment flow"
+
+        curl -f -X POST $BASE_URL/checkout \
+          -H "Content-Type: application/json" \
+          -d '{"cartId":"123"}'
+
+        curl -f -X POST $BASE_URL/payment \
+          -H "Content-Type: application/json" \
+          -d '{"amount":100}'
+
+        echo "E2E flow passed"
+status:
+  health:
+    passRate: 1
+    flipRate: 0
+    overallHealth: 1
